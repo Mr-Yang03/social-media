@@ -127,9 +127,9 @@ export function EditPostDialog({ post }: EditPostDialogProps) {
           </DialogDescription>
         </DialogHeader>
 
-        {post && (
+        {post ? (
           <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="content"
@@ -213,6 +213,10 @@ export function EditPostDialog({ post }: EditPostDialogProps) {
             </DialogFooter>
           </form>
         </Form>
+        ) : (
+          <div className="py-4 text-center text-muted-foreground">
+            Loading...
+          </div>
         )}
       </DialogContent>
     </Dialog>

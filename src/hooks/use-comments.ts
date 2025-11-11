@@ -42,3 +42,20 @@ export const useDeleteComment = () => {
     },
   });
 };
+
+export const useUpdateComment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, content }: { id: string | number; content: string }) =>
+      commentApi.updateComment(id, content),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      toast.success('Comment updated!');
+    },
+    onError: () => {
+      toast.error('Failed to update comment');
+    },
+  });
+};

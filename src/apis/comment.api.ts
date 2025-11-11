@@ -7,14 +7,15 @@ export const getCommentsByPostId = async (
 ): Promise<CommentWithUser[]> => {
   try {
     const [commentsResponse, usersResponse] = await Promise.all([
-      apiClient.get<Comment[]>(`/comments?postId=${postId}&_sort=createdAt`),
+      apiClient.get<Comment[]>(`/comments?postId=${postId}`),
       apiClient.get<User[]>('/users'),
     ]);
 
     const comments = commentsResponse.data;
     const users = usersResponse.data;
 
-    return comments.map((comment) => {
+    // Map comments with user data
+    const commentsWithUsers: CommentWithUser[] = comments.map((comment) => {
       const user = users.find((u) => u.id.toString() === comment.userId.toString());
 
       return {
@@ -25,8 +26,37 @@ export const getCommentsByPostId = async (
           name: 'Unknown User',
           createdAt: new Date().toISOString(),
         },
+        replies: [],
       };
     });
+
+    // Recursive function to build nested structure
+    const buildNestedComments = (parentId: string | number | null): CommentWithUser[] => {
+      const childComments = commentsWithUsers
+        .filter((c) => {
+          if (parentId === null) {
+            return !c.parentId || c.parentId === null;
+          }
+          return c.parentId?.toString() === parentId.toString();
+        })
+        .map((comment) => ({
+          ...comment,
+          replies: buildNestedComments(comment.id),
+        }));
+
+      // Sort child comments: oldest first for replies
+      return childComments.sort(
+        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      );
+    };
+
+    // Get all parent comments (no parentId) and build their nested structure
+    const parentComments = buildNestedComments(null);
+
+    // Sort parent comments: newest first
+    return parentComments.sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
   } catch (error) {
     throw new Error('Failed to fetch comments');
   }
@@ -47,6 +77,7 @@ export const createComment = async (data: CreateCommentData): Promise<Comment> =
       postId: data.postId,
       userId,
       content: data.content,
+      parentId: data.parentId || null,
       createdAt: new Date().toISOString(),
     };
 
@@ -62,5 +93,20 @@ export const deleteComment = async (id: string | number): Promise<void> => {
     await apiClient.delete(`/comments/${id}`);
   } catch (error) {
     throw new Error('Failed to delete comment');
+  }
+};
+
+export const updateComment = async (
+  id: string | number,
+  content: string
+): Promise<Comment> => {
+  try {
+    const response = await apiClient.patch<Comment>(`/comments/${id}`, {
+      content,
+      updatedAt: new Date().toISOString(),
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error('Failed to update comment');
   }
 };
