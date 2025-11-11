@@ -54,11 +54,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const register = async (credentials: RegisterCredentials) => {
     try {
-      const response = await authApi.register(credentials);
-      setUser(response.user);
-      setToken(response.token);
-      localStorage.setItem('auth_token', response.token);
-      router.push('/');
+      await authApi.register(credentials);
+      // Don't auto-login, just redirect to login page
+      router.push('/login');
     } catch (error) {
       throw error;
     }
