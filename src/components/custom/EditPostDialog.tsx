@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -23,8 +23,9 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Loader2, X, ImagePlus } from 'lucide-react';
-import { useCreatePost } from '@/hooks/use-posts';
+import { useUpdatePost } from '@/hooks/use-posts';
 import { useUIStore } from '@/stores/ui-store';
+import { PostWithUser } from '@/types/post';
 
 const postSchema = z.object({
   content: z.string().min(1, 'Post content is required').max(1000, 'Post is too long'),
@@ -32,10 +33,15 @@ const postSchema = z.object({
 
 type PostFormValues = z.infer<typeof postSchema>;
 
-export function CreatePostDialog() {
-  const isOpen = useUIStore((state) => state.isCreatePostOpen);
-  const setOpen = useUIStore((state) => state.setCreatePostOpen);
-  const createPost = useCreatePost();
+interface EditPostDialogProps {
+  post: PostWithUser | null;
+}
+
+export function EditPostDialog({ post }: EditPostDialogProps) {
+  const isOpen = useUIStore((state) => state.isEditPostOpen);
+  const setOpen = useUIStore((state) => state.setEditPostOpen);
+  const setEditingPostId = useUIStore((state) => state.setEditingPostId);
+  const updatePost = useUpdatePost();
   const [images, setImages] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -45,6 +51,16 @@ export function CreatePostDialog() {
       content: '',
     },
   });
+
+  // Update form when post changes
+  useEffect(() => {
+    if (post) {
+      form.reset({
+        content: post.content,
+      });
+      setImages(post.images || []);
+    }
+  }, [post, form]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -75,49 +91,57 @@ export function CreatePostDialog() {
   };
 
   const onSubmit = async (data: PostFormValues) => {
+    if (!post) return;
+    
     try {
-      await createPost.mutateAsync({
-        content: data.content,
-        images: images.length > 0 ? images : undefined,
+      await updatePost.mutateAsync({
+        id: post.id,
+        data: {
+          content: data.content,
+          images: images.length > 0 ? images : undefined,
+        },
       });
-      form.reset();
-      setImages([]);
-      setOpen(false);
+      handleClose();
     } catch (error) {
       // Error handled by mutation
     }
   };
 
   const handleClose = () => {
-    form.reset();
-    setImages([]);
     setOpen(false);
+    // Delay reset to allow modal close animation
+    setTimeout(() => {
+      form.reset();
+      setImages([]);
+      setEditingPostId(null);
+    }, 200);
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog open={isOpen && !!post} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
-          <DialogTitle>Create Post</DialogTitle>
+          <DialogTitle>Edit Post</DialogTitle>
           <DialogDescription>
-            Share your thoughts with the community
+            Make changes to your post
           </DialogDescription>
         </DialogHeader>
 
-        <Form {...form}>
+        {post && (
+          <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="content"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>What&apos;s on your mind?</FormLabel>
+                  <FormLabel>Content</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Share your thoughts..."
                       className="min-h-[120px] resize-none"
                       {...field}
-                      disabled={createPost.isPending}
+                      disabled={updatePost.isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -134,14 +158,14 @@ export function CreatePostDialog() {
                 multiple
                 onChange={handleImageUpload}
                 className="hidden"
-                id="image-upload"
+                id="image-upload-edit"
               />
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={() => fileInputRef.current?.click()}
-                disabled={createPost.isPending}
+                disabled={updatePost.isPending}
                 className="w-full"
               >
                 <ImagePlus className="mr-2 h-4 w-4" />
@@ -176,19 +200,20 @@ export function CreatePostDialog() {
                 type="button"
                 variant="outline"
                 onClick={handleClose}
-                disabled={createPost.isPending}
+                disabled={updatePost.isPending}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={createPost.isPending}>
-                {createPost.isPending && (
+              <Button type="submit" disabled={updatePost.isPending}>
+                {updatePost.isPending && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
-                Post
+                Save Changes
               </Button>
             </DialogFooter>
           </form>
         </Form>
+        )}
       </DialogContent>
     </Dialog>
   );

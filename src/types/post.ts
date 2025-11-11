@@ -4,6 +4,7 @@ export interface Post {
   id: number | string;
   userId: number | string;
   content: string;
+  images?: string[]; // Array of base64 image strings
   createdAt: string;
   updatedAt: string;
 }
@@ -15,8 +16,10 @@ export interface PostWithUser extends Post {
 
 export interface CreatePostData {
   content: string;
+  images?: string[];
 }
 
 export interface UpdatePostData {
   content: string;
+  images?: string[];
 }

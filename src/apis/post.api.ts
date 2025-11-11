@@ -107,6 +107,7 @@ export const createPost = async (data: CreatePostData): Promise<Post> => {
     const newPost = {
       userId,
       content: data.content,
+      images: data.images || [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };

@@ -12,10 +12,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MessageCircle, MoreVertical, Trash2 } from 'lucide-react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { MessageCircle, MoreVertical, Trash2, Edit, X } from 'lucide-react';
 import { PostWithUser } from '@/types/post';
 import { useAuth } from '@/hooks/use-auth';
 import { useDeletePost } from '@/hooks/use-posts';
+import { useUIStore } from '@/stores/ui-store';
 import { CommentSection } from './CommentSection';
 
 interface PostCardProps {
@@ -26,6 +28,9 @@ export function PostCard({ post }: PostCardProps) {
   const { user: currentUser } = useAuth();
   const deletePost = useDeletePost();
   const [showComments, setShowComments] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const setEditPostOpen = useUIStore((state) => state.setEditPostOpen);
+  const setEditingPostId = useUIStore((state) => state.setEditingPostId);
 
   const isOwner = currentUser?.id.toString() === post.userId.toString();
 
@@ -44,8 +49,14 @@ export function PostCard({ post }: PostCardProps) {
     }
   };
 
+  const handleEdit = () => {
+    setEditingPostId(post.id);
+    setEditPostOpen(true);
+  };
+
   return (
-    <Card>
+    <>
+      <Card>
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
@@ -76,6 +87,10 @@ export function PostCard({ post }: PostCardProps) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleEdit}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit
+                </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={handleDelete}
                   className="text-destructive focus:text-destructive"
@@ -91,6 +106,29 @@ export function PostCard({ post }: PostCardProps) {
 
       <CardContent>
         <p className="whitespace-pre-wrap">{post.content}</p>
+
+        {/* Image Gallery */}
+        {post.images && post.images.length > 0 && (
+          <div className={`mt-4 grid gap-2 ${
+            post.images.length === 1 ? 'grid-cols-1' :
+            post.images.length === 2 ? 'grid-cols-2' :
+            'grid-cols-2 md:grid-cols-3'
+          }`}>
+            {post.images.map((image, index) => (
+              <div
+                key={index}
+                className="relative aspect-square cursor-pointer overflow-hidden rounded-md"
+                onClick={() => setSelectedImage(image)}
+              >
+                <img
+                  src={image}
+                  alt={`Post image ${index + 1}`}
+                  className="h-full w-full object-cover transition-transform hover:scale-105"
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </CardContent>
 
       <CardFooter className="flex-col items-start gap-4">
@@ -109,5 +147,29 @@ export function PostCard({ post }: PostCardProps) {
         {showComments && <CommentSection postId={post.id} />}
       </CardFooter>
     </Card>
+
+      {/* Image Lightbox */}
+      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+        <DialogContent className="max-w-4xl">
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-0 top-0 z-10"
+              onClick={() => setSelectedImage(null)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+            {selectedImage && (
+              <img
+                src={selectedImage}
+                alt="Full size"
+                className="max-h-[80vh] w-full object-contain"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

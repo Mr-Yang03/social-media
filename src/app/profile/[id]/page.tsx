@@ -5,8 +5,10 @@ import { useQuery } from '@tanstack/react-query';
 import { AuthGuard } from '@/components/custom/AuthGuard';
 import { Navbar } from '@/components/custom/Navbar';
 import { CreatePostDialog } from '@/components/custom/CreatePostDialog';
+import { EditPostDialog } from '@/components/custom/EditPostDialog';
 import { PostCard } from '@/components/custom/PostCard';
 import { useUserPosts } from '@/hooks/use-posts';
+import { useUIStore } from '@/stores/ui-store';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Loader2, Calendar, Mail } from 'lucide-react';
@@ -27,6 +29,8 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
   });
 
   const { data: posts, isLoading: isLoadingPosts } = useUserPosts(userId);
+  const editingPostId = useUIStore((state) => state.editingPostId);
+  const editingPost = posts?.find((p) => p.id === editingPostId) || null;
 
   const getInitials = (name: string) => {
     return name
@@ -42,6 +46,7 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
       <div className="min-h-screen bg-background">
         <Navbar />
         <CreatePostDialog />
+        <EditPostDialog post={editingPost} />
 
         <main className="container mx-auto max-w-4xl px-4 py-8">
           {isLoadingUser ? (
