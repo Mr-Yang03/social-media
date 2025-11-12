@@ -1,5 +1,5 @@
 import { AuthGuard } from '@/components/custom/AuthGuard';
-import { RegisterForm } from '@/components/custom/RegisterForm';
+import { RegisterForm } from '@/section/register/components/RegisterForm';
 
 export default function RegisterPage() {
   return (
