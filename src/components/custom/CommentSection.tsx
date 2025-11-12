@@ -5,21 +5,21 @@ import { formatDistanceToNow } from 'date-fns';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
+import { Button } from '@/components/ui/Button';
+import { Textarea } from '@/components/ui/Textarea';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/ui/form';
+} from '@/components/ui/Form';
 import { Loader2, MessageCircle, Pencil, Send, Trash2 } from 'lucide-react';
 import { useCreateComment, useDeleteComment, useUpdateComment } from '@/api/comment/mutations';
 import { useComments } from '@/api/comment/queries';
 import { useAuth } from '@/hooks/useAuth';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@/components/ui/Separator';
 import { CommentWithUser } from '@/api/comment/types';
 
 interface CommentSectionProps {

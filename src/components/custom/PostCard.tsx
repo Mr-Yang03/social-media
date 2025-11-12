@@ -3,16 +3,16 @@
 import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/Card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
+import { Button } from '@/components/ui/Button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+} from '@/components/ui/DropdownMenu';
+import { Dialog, DialogContent } from '@/components/ui/Dialog';
 import { MessageCircle, MoreVertical, Trash2, Edit, X } from 'lucide-react';
 import { PostWithUser } from '@/api/post/types';
 import { useAuth } from '@/hooks/useAuth';

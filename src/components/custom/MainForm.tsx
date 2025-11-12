@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm, UseFormReturn } from 'react-hook-form';
-import { Form } from '@/components/ui/form';
+import { Form } from '@/components/ui/Form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 interface MainFormProps {

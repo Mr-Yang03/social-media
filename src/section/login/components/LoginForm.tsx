@@ -3,16 +3,16 @@
 import { useState, useRef } from 'react';
 import * as z from 'zod';
 import { useAuth } from '@/hooks/useAuth';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+} from '@/components/ui/Form';
+import { Input } from '@/components/ui/Input';
+import { Alert, AlertDescription } from '@/components/ui/Alert';
 import { AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
 import MainForm from '@/components/custom/MainForm';
 

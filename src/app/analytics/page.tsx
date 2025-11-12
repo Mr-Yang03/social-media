@@ -16,7 +16,7 @@ import { Navbar } from '@/components/custom/Navbar';
 import { CreatePostDialog } from '@/components/custom/CreatePostDialog';
 import { usePosts } from '@/api/post/queries';
 import { PostWithUser } from '@/api/post/types';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import {
   Table,
   TableBody,
@@ -24,9 +24,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+} from '@/components/ui/Table';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 import { ArrowUpDown, Loader2, Search } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';

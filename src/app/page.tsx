@@ -8,7 +8,7 @@ import { PostCard } from '@/components/custom/PostCard';
 import { usePosts } from '@/api/post/queries';
 import { useUIStore } from '@/stores/ui-store';
 import { Loader2 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/Card';
 
 export default function Home() {
   const { data: posts, isLoading, error } = usePosts();
