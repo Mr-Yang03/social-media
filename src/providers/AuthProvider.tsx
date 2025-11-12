@@ -2,8 +2,8 @@
 
 import { useState, useEffect, ReactNode } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
-import { User, LoginCredentials, RegisterCredentials } from '@/types/auth';
-import * as authApi from '@/apis/auth.api';
+import { User, LoginCredentials, RegisterCredentials } from '@/api/user/types';
+import * as authApi from '@/api/user/auth.api';
 import { useRouter } from 'next/navigation';
 
 interface AuthProviderProps {

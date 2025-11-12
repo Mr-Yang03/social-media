@@ -5,7 +5,7 @@ import { Navbar } from '@/components/custom/Navbar';
 import { CreatePostDialog } from '@/components/custom/CreatePostDialog';
 import { EditPostDialog } from '@/components/custom/EditPostDialog';
 import { PostCard } from '@/components/custom/PostCard';
-import { usePosts } from '@/hooks/use-posts';
+import { usePosts } from '@/api/post/queries';
 import { useUIStore } from '@/stores/ui-store';
 import { Loader2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';

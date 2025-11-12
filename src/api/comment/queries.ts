@@ -1,6 +1,7 @@
+import { useQuery } from '@tanstack/react-query';
+import { CommentWithUser, Comment } from './types';
+import { User } from '../user/types';
 import apiClient from '@/lib/api-client';
-import { Comment, CommentWithUser, CreateCommentData } from '@/types/comment';
-import { User } from '@/types/auth';
 
 export const getCommentsByPostId = async (
   postId: string | number
@@ -62,51 +63,10 @@ export const getCommentsByPostId = async (
   }
 };
 
-export const createComment = async (data: CreateCommentData): Promise<Comment> => {
-  try {
-    const token = localStorage.getItem('auth_token');
-    if (!token) {
-      throw new Error('Not authenticated');
-    }
-
-    // Decode token to get user ID
-    const decoded = atob(token);
-    const userId = decoded.split(':')[0];
-
-    const newComment = {
-      postId: data.postId,
-      userId,
-      content: data.content,
-      parentId: data.parentId || null,
-      createdAt: new Date().toISOString(),
-    };
-
-    const response = await apiClient.post<Comment>('/comments', newComment);
-    return response.data;
-  } catch (error) {
-    throw new Error('Failed to create comment');
-  }
-};
-
-export const deleteComment = async (id: string | number): Promise<void> => {
-  try {
-    await apiClient.delete(`/comments/${id}`);
-  } catch (error) {
-    throw new Error('Failed to delete comment');
-  }
-};
-
-export const updateComment = async (
-  id: string | number,
-  content: string
-): Promise<Comment> => {
-  try {
-    const response = await apiClient.patch<Comment>(`/comments/${id}`, {
-      content,
-      updatedAt: new Date().toISOString(),
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error('Failed to update comment');
-  }
+export const useComments = (postId: string | number) => {
+  return useQuery({
+    queryKey: ['comments', postId],
+    queryFn: () => getCommentsByPostId(postId),
+    enabled: !!postId,
+  });
 };

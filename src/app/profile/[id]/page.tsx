@@ -7,13 +7,13 @@ import { Navbar } from '@/components/custom/Navbar';
 import { CreatePostDialog } from '@/components/custom/CreatePostDialog';
 import { EditPostDialog } from '@/components/custom/EditPostDialog';
 import { PostCard } from '@/components/custom/PostCard';
-import { useUserPosts } from '@/hooks/use-posts';
+import { useUserPosts } from '@/api/post/queries';
 import { useUIStore } from '@/stores/ui-store';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Loader2, Calendar, Mail } from 'lucide-react';
 import apiClient from '@/lib/api-client';
-import { User } from '@/types/auth';
+import { User } from '@/api/user/types';
 import { formatDistanceToNow } from 'date-fns';
 
 export default function ProfilePage({ params }: { params: Promise<{ id: string }> }) {

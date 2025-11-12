@@ -23,9 +23,9 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Loader2, X, ImagePlus } from 'lucide-react';
-import { useUpdatePost } from '@/hooks/use-posts';
+import { useUpdatePost } from '@/api/post/mutations';
 import { useUIStore } from '@/stores/ui-store';
-import { PostWithUser } from '@/types/post';
+import { PostWithUser } from '@/api/post/types';
 
 const postSchema = z.object({
   content: z.string().min(1, 'Post content is required').max(1000, 'Post is too long'),
@@ -98,7 +98,7 @@ export function EditPostDialog({ post }: EditPostDialogProps) {
         id: post.id,
         data: {
           content: data.content,
-          images: images.length > 0 ? images : undefined,
+          images: images, // Always send the images array (even if empty)
         },
       });
       handleClose();

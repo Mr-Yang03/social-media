@@ -14,8 +14,8 @@ import {
 import { AuthGuard } from '@/components/custom/AuthGuard';
 import { Navbar } from '@/components/custom/Navbar';
 import { CreatePostDialog } from '@/components/custom/CreatePostDialog';
-import { usePosts } from '@/hooks/use-posts';
-import { PostWithUser } from '@/types/post';
+import { usePosts } from '@/api/post/queries';
+import { PostWithUser } from '@/api/post/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,

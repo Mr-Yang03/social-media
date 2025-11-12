@@ -16,10 +16,11 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Loader2, MessageCircle, Pencil, Send, Trash2 } from 'lucide-react';
-import { useComments, useCreateComment, useDeleteComment, useUpdateComment } from '@/hooks/use-comments';
-import { useAuth } from '@/hooks/use-auth';
+import { useCreateComment, useDeleteComment, useUpdateComment } from '@/api/comment/mutations';
+import { useComments } from '@/api/comment/queries';
+import { useAuth } from '@/hooks/useAuth';
 import { Separator } from '@/components/ui/separator';
-import { CommentWithUser } from '@/types/comment';
+import { CommentWithUser } from '@/api/comment/types';
 
 interface CommentSectionProps {
   postId: string | number;

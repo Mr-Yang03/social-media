@@ -5,19 +5,20 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import Link from 'next/link';
-import { useAuth } from '@/hooks/use-auth';
-import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+// import { Button } from '@/components/ui/button';
+// import {
+//   Form,
+//   FormControl,
+//   FormField,
+//   FormItem,
+//   FormLabel,
+//   FormMessage,
+// } from '@/components/ui/form';
+// import { Input } from '@/components/ui/input';
+// import { Alert, AlertDescription } from '@/components/ui/alert';
+// import { AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
+import { LoginForm } from './components/LoginForm';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -26,9 +27,9 @@ const loginSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-export function LoginForm() {
-  const [error, setError] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(false);
+export function LoginSection() {
+//   const [error, setError] = useState<string>('');
+//   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const { login } = useAuth();
@@ -41,37 +42,37 @@ export function LoginForm() {
     },
   });
 
-  const togglePasswordVisibility = () => {
-    // Save current cursor position
-    const input = passwordInputRef.current;
-    const cursorPosition = input?.selectionStart ?? null;
+//   const togglePasswordVisibility = () => {
+//     // Save current cursor position
+//     const input = passwordInputRef.current;
+//     const cursorPosition = input?.selectionStart ?? null;
     
-    // Toggle visibility
-    setShowPassword(!showPassword);
+//     // Toggle visibility
+//     setShowPassword(!showPassword);
     
-    // Restore focus and cursor position after state update
-    setTimeout(() => {
-      if (input) {
-        input.focus();
-        if (cursorPosition !== null) {
-          input.setSelectionRange(cursorPosition, cursorPosition);
-        }
-      }
-    }, 0);
-  };
+//     // Restore focus and cursor position after state update
+//     setTimeout(() => {
+//       if (input) {
+//         input.focus();
+//         if (cursorPosition !== null) {
+//           input.setSelectionRange(cursorPosition, cursorPosition);
+//         }
+//       }
+//     }, 0);
+//   };
 
-  const onSubmit = async (data: LoginFormValues) => {
-    setError('');
-    setIsLoading(true);
+//   const onSubmit = async (data: LoginFormValues) => {
+//     setError('');
+//     setIsLoading(true);
 
-    try {
-      await login(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+//     try {
+//       await login(data);
+//     } catch (err) {
+//       setError(err instanceof Error ? err.message : 'Login failed');
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
 
   return (
     <div className="w-full max-w-md space-y-6">
@@ -82,14 +83,14 @@ export function LoginForm() {
         </p>
       </div>
 
-      {error && (
+      {/* {error && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
-      )}
+      )} */}
 
-      <Form {...form}>
+      {/* <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
@@ -156,7 +157,9 @@ export function LoginForm() {
             Sign In
           </Button>
         </form>
-      </Form>
+      </Form> */}
+
+      <LoginForm />
 
       <div className="text-center text-sm">
         Don&apos;t have an account?{' '}

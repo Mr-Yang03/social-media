@@ -14,9 +14,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { MessageCircle, MoreVertical, Trash2, Edit, X } from 'lucide-react';
-import { PostWithUser } from '@/types/post';
-import { useAuth } from '@/hooks/use-auth';
-import { useDeletePost } from '@/hooks/use-posts';
+import { PostWithUser } from '@/api/post/types';
+import { useAuth } from '@/hooks/useAuth';
+import { useDeletePost } from '@/api/post/mutations';
 import { useUIStore } from '@/stores/ui-store';
 import { CommentSection } from './CommentSection';
 

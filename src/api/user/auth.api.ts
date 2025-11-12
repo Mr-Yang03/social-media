@@ -1,5 +1,5 @@
 import apiClient from '@/lib/api-client';
-import { LoginCredentials, RegisterCredentials, AuthResponse, User } from '@/types/auth';
+import { LoginCredentials, RegisterCredentials, AuthResponse, User } from "./types";
 
 // Mock login - in real app, this would be a proper backend endpoint
 export const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {

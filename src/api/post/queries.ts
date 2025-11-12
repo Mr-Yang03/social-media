@@ -1,6 +1,7 @@
+import { useQuery } from '@tanstack/react-query';
+import { PostWithUser, Post } from './types';
+import { User } from '../user/types';
 import apiClient from '@/lib/api-client';
-import { Post, PostWithUser, CreatePostData, UpdatePostData } from '@/types/post';
-import { User } from '@/types/auth';
 
 export const getPosts = async (): Promise<PostWithUser[]> => {
   try {
@@ -93,55 +94,25 @@ export const getPostsByUserId = async (userId: string | number): Promise<PostWit
   }
 };
 
-export const createPost = async (data: CreatePostData): Promise<Post> => {
-  try {
-    const token = localStorage.getItem('auth_token');
-    if (!token) {
-      throw new Error('Not authenticated');
-    }
-
-    // Decode token to get user ID
-    const decoded = atob(token);
-    const userId = decoded.split(':')[0];
-
-    const newPost = {
-      userId,
-      content: data.content,
-      images: data.images || [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    const response = await apiClient.post<Post>('/posts', newPost);
-    return response.data;
-  } catch (error) {
-    throw new Error('Failed to create post');
-  }
+export const usePosts = () => {
+  return useQuery({
+    queryKey: ['posts'],
+    queryFn: getPosts,
+  });
 };
 
-export const updatePost = async (
-  id: string | number,
-  data: UpdatePostData
-): Promise<Post> => {
-  try {
-    const response = await apiClient.patch<Post>(`/posts/${id}`, {
-      ...data,
-      updatedAt: new Date().toISOString(),
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error('Failed to update post');
-  }
+export const usePost = (id: string | number) => {
+  return useQuery({
+    queryKey: ['posts', id],
+    queryFn: () => getPostById(id),
+    enabled: !!id,
+  });
 };
 
-export const deletePost = async (id: string | number): Promise<void> => {
-  try {
-    await apiClient.delete(`/posts/${id}`);
-    // Also delete all comments for this post
-    const commentsResponse = await apiClient.get(`/comments?postId=${id}`);
-    const comments = commentsResponse.data;
-    await Promise.all(comments.map((comment: any) => apiClient.delete(`/comments/${comment.id}`)));
-  } catch (error) {
-    throw new Error('Failed to delete post');
-  }
+export const useUserPosts = (userId: string | number) => {
+  return useQuery({
+    queryKey: ['posts', 'user', userId],
+    queryFn: () => getPostsByUserId(userId),
+    enabled: !!userId,
+  });
 };

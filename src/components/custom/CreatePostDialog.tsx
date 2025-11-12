@@ -23,7 +23,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Loader2, X, ImagePlus } from 'lucide-react';
-import { useCreatePost } from '@/hooks/use-posts';
+import { useCreatePost } from '@/api/post/mutations';
 import { useUIStore } from '@/stores/ui-store';
 
 const postSchema = z.object({

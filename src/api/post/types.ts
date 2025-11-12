@@ -1,4 +1,4 @@
-import { User } from './auth';
+import { User } from "../user/types";
 
 export interface Post {
   id: number | string;

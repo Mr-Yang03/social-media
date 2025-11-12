@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Home, Moon, Sun, User, LogOut, PlusCircle, BarChart3 } from 'lucide-react';
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '@/hooks/useAuth';
 import { useUIStore } from '@/stores/ui-store';
 
 export function Navbar() {
