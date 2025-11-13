@@ -11,9 +11,7 @@ import {
   type SortingState,
   type ColumnDef,
 } from '@tanstack/react-table';
-import { AuthGuard } from '@/components/custom/AuthGuard';
-import { Navbar } from '@/components/custom/Navbar';
-import { PostDialog } from '@/components/custom/PostDialog';
+import { AppLayout } from '@/components/custom/AppLayout';
 import { usePosts } from '@/api/post/queries';
 import { PostWithUser } from '@/api/post/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -138,12 +136,8 @@ export default function AnalyticsPage() {
   });
 
   return (
-    <AuthGuard requireAuth={true}>
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <PostDialog mode="create" />
-
-        <main className="container mx-auto max-w-6xl px-4 py-8">
+    <AppLayout>
+      <main className="container mx-auto max-w-6xl px-4 py-8">
           <div className="space-y-6">
             {/* Header */}
             <div>
@@ -294,7 +288,6 @@ export default function AnalyticsPage() {
             </Card>
           </div>
         </main>
-      </div>
-    </AuthGuard>
+    </AppLayout>
   );
 }

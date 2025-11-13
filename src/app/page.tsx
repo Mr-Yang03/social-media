@@ -1,27 +1,17 @@
 'use client';
 
-import { AuthGuard } from '@/components/custom/AuthGuard';
-import { Navbar } from '@/components/custom/Navbar';
-import { PostDialog } from '@/components/custom/PostDialog';
+import { AppLayout } from '@/components/custom/AppLayout';
 import { PostCard } from '@/components/custom/PostCard';
 import { usePosts } from '@/api/post/queries';
-import { useUIStore } from '@/stores/ui-store';
 import { Loader2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
 
 export default function Home() {
   const { data: posts, isLoading, error } = usePosts();
-  const editingPostId = useUIStore((state) => state.editingPostId);
-  const editingPost = posts?.find((p) => p.id === editingPostId) || null;
 
   return (
-    <AuthGuard requireAuth={true}>
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <PostDialog mode="create" />
-        <PostDialog mode="edit" post={editingPost} />
-
-        <main className="container mx-auto max-w-2xl px-4 py-8">
+    <AppLayout>
+      <main className="container mx-auto max-w-2xl px-4 py-8">
           <div className="space-y-6">
             {/* Header */}
             <div>
@@ -59,8 +49,7 @@ export default function Home() {
             )}
           </div>
         </main>
-      </div>
-    </AuthGuard>
+    </AppLayout>
   );
 }
 

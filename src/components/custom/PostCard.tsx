@@ -57,96 +57,96 @@ export function PostCard({ post }: PostCardProps) {
   return (
     <>
       <Card>
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <Link href={`/profile/${post.userId}`}>
-              <Avatar className="h-10 w-10 cursor-pointer">
-                <AvatarImage src={post.user.avatar} alt={post.user.name} />
-                <AvatarFallback>{getInitials(post.user.name)}</AvatarFallback>
-              </Avatar>
-            </Link>
-            <div>
-              <Link
-                href={`/profile/${post.userId}`}
-                className="font-semibold hover:underline"
-              >
-                {post.user.name}
+        <CardHeader>
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-3">
+              <Link href={`/profile/${post.userId}`}>
+                <Avatar className="h-10 w-10 cursor-pointer">
+                  <AvatarImage src={post.user.avatar} alt={post.user.name} />
+                  <AvatarFallback>{getInitials(post.user.name)}</AvatarFallback>
+                </Avatar>
               </Link>
-              <p className="text-sm text-muted-foreground">
-                {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
-              </p>
-            </div>
-          </div>
-
-          {isOwner && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={handleEdit}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={handleDelete}
-                  className="text-destructive focus:text-destructive"
+              <div>
+                <Link
+                  href={`/profile/${post.userId}`}
+                  className="font-semibold hover:underline"
                 >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-        </div>
-      </CardHeader>
-
-      <CardContent>
-        <p className="whitespace-pre-wrap">{post.content}</p>
-
-        {/* Image Gallery */}
-        {post.images && post.images.length > 0 && (
-          <div className={`mt-4 grid gap-2 ${
-            post.images.length === 1 ? 'grid-cols-1' :
-            post.images.length === 2 ? 'grid-cols-2' :
-            'grid-cols-2 md:grid-cols-3'
-          }`}>
-            {post.images.map((image, index) => (
-              <div
-                key={index}
-                className="relative aspect-square cursor-pointer overflow-hidden rounded-md"
-                onClick={() => setSelectedImage(image)}
-              >
-                <img
-                  src={image}
-                  alt={`Post image ${index + 1}`}
-                  className="h-full w-full object-cover transition-transform hover:scale-105"
-                />
+                  {post.user.name}
+                </Link>
+                <p className="text-sm text-muted-foreground">
+                  {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
+                </p>
               </div>
-            ))}
+            </div>
+
+            {isOwner && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleEdit}>
+                    <Edit className="mr-2 h-4 w-4" />
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleDelete}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
-        )}
-      </CardContent>
+        </CardHeader>
 
-      <CardFooter className="flex-col items-start gap-4">
-        <div className="flex w-full gap-2">
-          <Button
-            variant={showComments ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setShowComments(!showComments)}
-            className="gap-2"
-          >
-            <MessageCircle className="h-4 w-4" />
-            {post.commentsCount || 0} Comments
-          </Button>
-        </div>
+        <CardContent>
+          <p className="whitespace-pre-wrap">{post.content}</p>
 
-        {showComments && <CommentSection postId={post.id} />}
-      </CardFooter>
-    </Card>
+          {/* Image Gallery */}
+          {post.images && post.images.length > 0 && (
+            <div className={`mt-4 grid gap-2 ${
+              post.images.length === 1 ? 'grid-cols-1' :
+              post.images.length === 2 ? 'grid-cols-2' :
+              'grid-cols-2 md:grid-cols-3'
+            }`}>
+              {post.images.map((image, index) => (
+                <div
+                  key={index}
+                  className="relative aspect-square cursor-pointer overflow-hidden rounded-md"
+                  onClick={() => setSelectedImage(image)}
+                >
+                  <img
+                    src={image}
+                    alt={`Post image ${index + 1}`}
+                    className="h-full w-full object-cover transition-transform hover:scale-105"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+
+        <CardFooter className="flex-col items-start gap-4">
+          <div className="flex w-full gap-2">
+            <Button
+              variant={showComments ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setShowComments(!showComments)}
+              className="gap-2"
+            >
+              <MessageCircle className="h-4 w-4" />
+              {post.commentsCount || 0} Comments
+            </Button>
+          </div>
+
+          {showComments && <CommentSection postId={post.id} />}
+        </CardFooter>
+      </Card>
 
       {/* Image Lightbox */}
       <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>

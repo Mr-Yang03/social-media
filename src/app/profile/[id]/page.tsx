@@ -2,12 +2,9 @@
 
 import { use } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { AuthGuard } from '@/components/custom/AuthGuard';
-import { Navbar } from '@/components/custom/Navbar';
-import { PostDialog } from '@/components/custom/PostDialog';
+import { AppLayout } from '@/components/custom/AppLayout';
 import { PostCard } from '@/components/custom/PostCard';
 import { useUserPosts } from '@/api/post/queries';
-import { useUIStore } from '@/stores/ui-store';
 import { Card, CardContent, CardHeader } from '@/components/ui/Card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
 import { Loader2, Calendar, Mail } from 'lucide-react';
@@ -28,8 +25,6 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
   });
 
   const { data: posts, isLoading: isLoadingPosts } = useUserPosts(userId);
-  const editingPostId = useUIStore((state) => state.editingPostId);
-  const editingPost = posts?.find((p) => p.id === editingPostId) || null;
 
   const getInitials = (name: string) => {
     return name
@@ -41,13 +36,8 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
   };
 
   return (
-    <AuthGuard requireAuth={true}>
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <PostDialog mode="create" />
-        <PostDialog mode="edit" post={editingPost} />
-
-        <main className="container mx-auto max-w-4xl px-4 py-8">
+    <AppLayout>
+      <main className="container mx-auto max-w-4xl px-4 py-8">
           {isLoadingUser ? (
             <Card>
               <CardContent className="flex items-center justify-center py-12">
@@ -135,7 +125,6 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
             </Card>
           )}
         </main>
-      </div>
-    </AuthGuard>
+    </AppLayout>
   );
 }

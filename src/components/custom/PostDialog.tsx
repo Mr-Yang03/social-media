@@ -117,7 +117,14 @@ export function PostDialog({ mode, post }: PostDialogProps) {
 
   return (
     <Dialog open={dialogOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[525px]">
+      <DialogContent 
+        className="sm:max-w-[525px]"
+        onOpenAutoFocus={(e) => {
+          if (mode === 'edit') {
+            e.preventDefault();
+          }
+        }}
+      >
         <DialogHeader>
           <DialogTitle>{mode === 'create' ? 'Create Post' : 'Edit Post'}</DialogTitle>
           <DialogDescription>
