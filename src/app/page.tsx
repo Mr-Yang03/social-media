@@ -2,8 +2,7 @@
 
 import { AuthGuard } from '@/components/custom/AuthGuard';
 import { Navbar } from '@/components/custom/Navbar';
-import { CreatePostDialog } from '@/components/custom/CreatePostDialog';
-import { EditPostDialog } from '@/components/custom/EditPostDialog';
+import { PostDialog } from '@/components/custom/PostDialog';
 import { PostCard } from '@/components/custom/PostCard';
 import { usePosts } from '@/api/post/queries';
 import { useUIStore } from '@/stores/ui-store';
@@ -19,8 +18,8 @@ export default function Home() {
     <AuthGuard requireAuth={true}>
       <div className="min-h-screen bg-background">
         <Navbar />
-        <CreatePostDialog />
-        <EditPostDialog post={editingPost} />
+        <PostDialog mode="create" />
+        <PostDialog mode="edit" post={editingPost} />
 
         <main className="container mx-auto max-w-2xl px-4 py-8">
           <div className="space-y-6">

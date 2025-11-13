@@ -13,7 +13,7 @@ import {
 } from '@tanstack/react-table';
 import { AuthGuard } from '@/components/custom/AuthGuard';
 import { Navbar } from '@/components/custom/Navbar';
-import { CreatePostDialog } from '@/components/custom/CreatePostDialog';
+import { PostDialog } from '@/components/custom/PostDialog';
 import { usePosts } from '@/api/post/queries';
 import { PostWithUser } from '@/api/post/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -141,7 +141,7 @@ export default function AnalyticsPage() {
     <AuthGuard requireAuth={true}>
       <div className="min-h-screen bg-background">
         <Navbar />
-        <CreatePostDialog />
+        <PostDialog mode="create" />
 
         <main className="container mx-auto max-w-6xl px-4 py-8">
           <div className="space-y-6">
