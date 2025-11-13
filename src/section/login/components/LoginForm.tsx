@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import * as z from 'zod';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Alert, AlertDescription } from '@/components/ui/Alert';
-import { AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import MainForm from '@/components/custom/MainForm';
+import { PasswordInput } from '@/components/custom/PasswordInput';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -19,25 +20,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export function LoginForm() {
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const passwordInputRef = useRef<HTMLInputElement>(null);
   const { login } = useAuth();
-
-  const togglePasswordVisibility = () => {
-    const input = passwordInputRef.current;
-    const cursorPosition = input?.selectionStart ?? null;
-    
-    setShowPassword(!showPassword);
-    
-    setTimeout(() => {
-      if (input) {
-        input.focus();
-        if (cursorPosition !== null) {
-          input.setSelectionRange(cursorPosition, cursorPosition);
-        }
-      }
-    }, 0);
-  };
 
   const onSubmit = async (data: LoginFormValues) => {
     setError('');
@@ -81,35 +64,9 @@ export function LoginForm() {
         <MainForm.Field
           name="password"
           label="Password"
-          component={({ ref, ...props }) => (
-            <div className="relative">
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="••••••••"
-                ref={ref || passwordInputRef}
-                className="pr-10"
-                {...props}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                onClick={togglePasswordVisibility}
-                disabled={isLoading}
-                tabIndex={-1}
-              >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" />
-                ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" />
-                )}
-                <span className="sr-only">
-                  {showPassword ? 'Hide password' : 'Show password'}
-                </span>
-              </Button>
-            </div>
-          )}
+          component={PasswordInput}
+          placeholder="••••••••"
+          className="pr-10"
           disabled={isLoading}
         />
 

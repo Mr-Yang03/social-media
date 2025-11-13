@@ -12,8 +12,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu';
-import { Dialog, DialogContent } from '@/components/ui/Dialog';
-import { MessageCircle, MoreVertical, Trash2, Edit, X } from 'lucide-react';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
+import { MessageCircle, MoreVertical, Trash2, Edit } from 'lucide-react';
 import { PostWithUser } from '@/api/post/types';
 import { useAuth } from '@/hooks/useAuth';
 import { useDeletePost } from '@/api/post/mutations';
@@ -151,23 +151,14 @@ export function PostCard({ post }: PostCardProps) {
       {/* Image Lightbox */}
       <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
         <DialogContent className="max-w-4xl">
-          <div className="relative">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-0 top-0 z-10"
-              onClick={() => setSelectedImage(null)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-            {selectedImage && (
-              <img
-                src={selectedImage}
-                alt="Full size"
-                className="max-h-[80vh] w-full object-contain"
-              />
-            )}
-          </div>
+          <DialogTitle className="sr-only">Image preview</DialogTitle>
+          {selectedImage && (
+            <img
+              src={selectedImage}
+              alt="Full size"
+              className="max-h-[80vh] w-full object-contain"
+            />
+          )}
         </DialogContent>
       </Dialog>
     </>

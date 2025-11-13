@@ -51,11 +51,11 @@ function Field({ name, label, component: Component, placeholder, type, disabled,
           {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
             <Component
-              type={type}
               placeholder={placeholder}
               disabled={disabled}
               className={className}
               {...field}
+              {...(type && { type })}
               {...props}
             />
           </FormControl>

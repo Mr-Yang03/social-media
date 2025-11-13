@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import * as z from 'zod';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Alert, AlertDescription } from '@/components/ui/Alert';
-import { AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import MainForm from '@/components/custom/MainForm';
+import { PasswordInput } from '@/components/custom/PasswordInput';
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -25,43 +26,7 @@ export function RegisterForm() {
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const passwordInputRef = useRef<HTMLInputElement>(null);
-  const confirmPasswordInputRef = useRef<HTMLInputElement>(null);
   const { register } = useAuth();
-
-  const togglePasswordVisibility = () => {
-    const input = passwordInputRef.current;
-    const cursorPosition = input?.selectionStart ?? null;
-    
-    setShowPassword(!showPassword);
-    
-    setTimeout(() => {
-      if (input) {
-        input.focus();
-        if (cursorPosition !== null) {
-          input.setSelectionRange(cursorPosition, cursorPosition);
-        }
-      }
-    }, 0);
-  };
-
-  const toggleConfirmPasswordVisibility = () => {
-    const input = confirmPasswordInputRef.current;
-    const cursorPosition = input?.selectionStart ?? null;
-    
-    setShowConfirmPassword(!showConfirmPassword);
-    
-    setTimeout(() => {
-      if (input) {
-        input.focus();
-        if (cursorPosition !== null) {
-          input.setSelectionRange(cursorPosition, cursorPosition);
-        }
-      }
-    }, 0);
-  };
 
   const onSubmit = async (data: RegisterFormValues) => {
     setError('');
@@ -129,70 +94,18 @@ export function RegisterForm() {
         <MainForm.Field
           name="password"
           label="Password"
-          component={({ ref, ...props }) => (
-            <div className="relative">
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="••••••••"
-                ref={ref || passwordInputRef}
-                className="pr-10"
-                {...props}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                onClick={togglePasswordVisibility}
-                disabled={isLoading}
-                tabIndex={-1}
-              >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" />
-                ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" />
-                )}
-                <span className="sr-only">
-                  {showPassword ? 'Hide password' : 'Show password'}
-                </span>
-              </Button>
-            </div>
-          )}
+          component={PasswordInput}
+          placeholder="••••••••"
+          className="pr-10"
           disabled={isLoading}
         />
 
         <MainForm.Field
           name="confirmPassword"
           label="Confirm Password"
-          component={({ ref, ...props }) => (
-            <div className="relative">
-              <Input
-                type={showConfirmPassword ? 'text' : 'password'}
-                placeholder="••••••••"
-                ref={ref || confirmPasswordInputRef}
-                className="pr-10"
-                {...props}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                onClick={toggleConfirmPasswordVisibility}
-                disabled={isLoading}
-                tabIndex={-1}
-              >
-                {showConfirmPassword ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" />
-                ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" />
-                )}
-                <span className="sr-only">
-                  {showConfirmPassword ? 'Hide password' : 'Show password'}
-                </span>
-              </Button>
-            </div>
-          )}
+          component={PasswordInput}
+          placeholder="••••••••"
+          className="pr-10"
           disabled={isLoading}
         />
 

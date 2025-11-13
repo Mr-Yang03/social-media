@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import {
   Dialog,
@@ -12,15 +10,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/Dialog';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/Form';
 import { Textarea } from '@/components/ui/Textarea';
+import MainForm from '@/components/custom/MainForm';
 import { Button } from '@/components/ui/Button';
 import { Loader2, X, ImagePlus } from 'lucide-react';
 import { useCreatePost, useUpdatePost } from '@/api/post/mutations';
@@ -54,22 +45,12 @@ export function PostDialog({ mode, post }: PostDialogProps) {
   const setOpen = mode === 'create' ? setCreateOpen : setEditOpen;
   const mutation = mode === 'create' ? createPost : updatePost;
 
-  const form = useForm<PostFormValues>({
-    resolver: zodResolver(postSchema),
-    defaultValues: {
-      content: '',
-    },
-  });
-
-  // Update form when post changes (for edit mode)
+  // Update images when post changes (for edit mode)
   useEffect(() => {
     if (mode === 'edit' && post) {
-      form.reset({
-        content: post.content,
-      });
       setImages(post.images || []);
     }
-  }, [mode, post, form]);
+  }, [mode, post]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -124,9 +105,7 @@ export function PostDialog({ mode, post }: PostDialogProps) {
 
   const handleClose = () => {
     setOpen(false);
-    // Delay reset to allow modal close animation
     setTimeout(() => {
-      form.reset();
       setImages([]);
       if (mode === 'edit') {
         setEditingPostId(null);
@@ -148,29 +127,21 @@ export function PostDialog({ mode, post }: PostDialogProps) {
           </DialogDescription>
         </DialogHeader>
 
-        {(mode === 'create' || post) ? (
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="content"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      {mode === 'create' ? "What's on your mind?" : 'Content'}
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Share your thoughts..."
-                        className="min-h-[120px] resize-none"
-                        {...field}
-                        disabled={mutation.isPending}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        {mode === 'create' || post ? (
+          <MainForm
+            validationSchema={postSchema}
+            defaultValues={{ content: mode === 'edit' && post ? post.content : '' }}
+            onSubmit={onSubmit}
+          >
+            <MainForm.Field
+              name="content"
+              label={mode === 'create' ? "What's on your mind?" : 'Content'}
+              component={Textarea}
+              placeholder="Share your thoughts..."
+              className="min-h-[120px] resize-none"
+              disabled={mutation.isPending}
+              autoFocus={mode === 'create'}
+            />
 
               {/* Image Upload Section */}
               <div className="space-y-2">
@@ -234,8 +205,7 @@ export function PostDialog({ mode, post }: PostDialogProps) {
                   {mode === 'create' ? 'Post' : 'Save Changes'}
                 </Button>
               </DialogFooter>
-            </form>
-          </Form>
+          </MainForm>
         ) : (
           <div className="py-4 text-center text-muted-foreground">
             Loading...

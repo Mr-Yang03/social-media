@@ -2,19 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
 import { Textarea } from '@/components/ui/Textarea';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from '@/components/ui/Form';
+import MainForm from '@/components/custom/MainForm';
 import { Loader2, MessageCircle, Pencil, Send, Trash2 } from 'lucide-react';
 import { useCreateComment, useDeleteComment, useUpdateComment } from '@/api/comment/mutations';
 import { useComments } from '@/api/comment/queries';
@@ -65,27 +57,6 @@ function CommentItem({
   const isReplying = replyingTo === comment.id;
   const isEditing = editingId === comment.id;
 
-  const replyForm = useForm<CommentFormValues>({
-    resolver: zodResolver(commentSchema),
-    defaultValues: {
-      content: '',
-    },
-  });
-
-  const editForm = useForm<CommentFormValues>({
-    resolver: zodResolver(commentSchema),
-    defaultValues: {
-      content: comment.content,
-    },
-  });
-
-  // Reset edit form when entering edit mode
-  useEffect(() => {
-    if (isEditing) {
-      editForm.reset({ content: comment.content });
-    }
-  }, [isEditing, comment.content, editForm]);
-
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -102,7 +73,6 @@ function CommentItem({
         content: data.content,
         parentId: comment.id,
       });
-      replyForm.reset();
       onCancelReply();
     } catch (error) {
       // Error handled by mutation
@@ -165,30 +135,20 @@ function CommentItem({
 
           {isEditing ? (
             <div className="mt-2">
-              <Form {...editForm}>
-                <form
-                  onSubmit={editForm.handleSubmit(handleEditSubmit)}
-                  className="space-y-2"
-                >
-                  <FormField
-                    control={editForm.control}
-                    name="content"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Edit your comment..."
-                            className="min-h-[60px] resize-none"
-                            {...field}
-                            disabled={updateComment.isPending}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+              <MainForm
+                validationSchema={commentSchema}
+                defaultValues={{ content: comment.content }}
+                onSubmit={handleEditSubmit}
+              >
+                <MainForm.Field
+                  name="content"
+                  component={Textarea}
+                  placeholder="Edit your comment..."
+                  className="min-h-[60px] resize-none"
+                  disabled={updateComment.isPending}
+                />
 
-                  <div className="flex justify-end gap-2">
+                <div className="flex justify-end gap-2">
                     <Button
                       type="button"
                       variant="outline"
@@ -212,8 +172,7 @@ function CommentItem({
                       Save
                     </Button>
                   </div>
-                </form>
-              </Form>
+              </MainForm>
             </div>
           ) : (
             <>
@@ -236,30 +195,20 @@ function CommentItem({
       {/* Reply Form */}
       {isReplying && (
         <div className="mt-3 ml-11">
-          <Form {...replyForm}>
-            <form
-              onSubmit={replyForm.handleSubmit(handleReplySubmit)}
-              className="space-y-2"
-            >
-              <FormField
-                control={replyForm.control}
-                name="content"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Textarea
-                        placeholder={`Reply to ${comment.user.name}...`}
-                        className="min-h-[60px] resize-none"
-                        {...field}
-                        disabled={createComment.isPending}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          <MainForm
+            validationSchema={commentSchema}
+            defaultValues={{ content: '' }}
+            onSubmit={handleReplySubmit}
+          >
+            <MainForm.Field
+              name="content"
+              component={Textarea}
+              placeholder={`Reply to ${comment.user.name}...`}
+              className="min-h-[60px] resize-none"
+              disabled={createComment.isPending}
+            />
 
-              <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-2">
                 <Button
                   type="button"
                   variant="outline"
@@ -283,8 +232,7 @@ function CommentItem({
                   Reply
                 </Button>
               </div>
-            </form>
-          </Form>
+          </MainForm>
         </div>
       )}
 
@@ -321,13 +269,6 @@ export function CommentSection({ postId }: CommentSectionProps) {
   const [replyingTo, setReplyingTo] = useState<string | number | null>(null);
   const [editingId, setEditingId] = useState<string | number | null>(null);
 
-  const form = useForm<CommentFormValues>({
-    resolver: zodResolver(commentSchema),
-    defaultValues: {
-      content: '',
-    },
-  });
-
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -344,7 +285,6 @@ export function CommentSection({ postId }: CommentSectionProps) {
         content: data.content,
         parentId: null,
       });
-      form.reset();
     } catch (error) {
       // Error handled by mutation
     }
@@ -361,37 +301,30 @@ export function CommentSection({ postId }: CommentSectionProps) {
       <Separator />
 
       {/* Comment Form */}
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-          <FormField
-            control={form.control}
-            name="content"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className="flex gap-3">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={currentUser?.avatar} alt={currentUser?.name} />
-                      <AvatarFallback>
-                        {currentUser ? getInitials(currentUser.name) : 'U'}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 space-y-2">
-                      <Textarea
-                        placeholder="Write a comment..."
-                        className="min-h-[60px] resize-none"
-                        {...field}
-                        disabled={createComment.isPending}
-                      />
-                      <FormMessage />
-                    </div>
-                  </div>
-                </FormControl>
-              </FormItem>
-            )}
-          />
+      <MainForm
+        validationSchema={commentSchema}
+        defaultValues={{ content: '' }}
+        onSubmit={onSubmit}
+      >
+        <div className="flex gap-3">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={currentUser?.avatar} alt={currentUser?.name} />
+            <AvatarFallback>
+              {currentUser ? getInitials(currentUser.name) : 'U'}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 space-y-2">
+            <MainForm.Field
+              name="content"
+              component={Textarea}
+              placeholder="Write a comment..."
+              className="min-h-[60px] resize-none"
+              disabled={createComment.isPending}
+            />
+          </div>
+        </div>
 
-          <div className="flex justify-end">
+        <div className="flex justify-end">
             <Button
               type="submit"
               size="sm"
@@ -406,8 +339,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
               Comment
             </Button>
           </div>
-        </form>
-      </Form>
+      </MainForm>
 
       {/* Comments List */}
       {isLoading ? (
